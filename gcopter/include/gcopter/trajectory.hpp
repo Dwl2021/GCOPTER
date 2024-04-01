@@ -22,6 +22,8 @@
     SOFTWARE.
 */
 
+
+
 #ifndef TRAJECTORY_HPP
 #define TRAJECTORY_HPP
 
@@ -314,6 +316,32 @@ public:
     }
 };
 
+// please output all the api of Trajectory
+// getPieceNum
+// getDurations
+// getTotalDuration
+// getPositions
+// operator[]
+// clear
+// begin
+// end
+// reserve
+// emplace_back
+// append
+// locatePieceIdx
+// getPos
+// getVel
+// getAcc
+// getJer
+// getJuncPos
+// getJuncVel
+// getJuncAcc
+// getMaxVelRate
+// getMaxAccRate
+// checkMaxVelRate
+// checkMaxAccRate
+
+
 template <int D>
 class Trajectory
 {
@@ -372,6 +400,31 @@ public:
         }
         positions.col(N) = pieces[N - 1].getPos(pieces[N - 1].getDuration());
         return positions;
+    }
+    // get velocity
+    inline Eigen::Matrix3Xd getVelocities() const
+    {
+        int N = getPieceNum();
+        Eigen::Matrix3Xd velocities(3, N + 1);
+        for (int i = 0; i < N; i++)
+        {
+            velocities.col(i) = pieces[i].getCoeffMat().col(D - 1);
+        }
+        velocities.col(N) = pieces[N - 1].getVel(pieces[N - 1].getDuration());
+        return velocities;
+    }
+
+    // get acceleration
+    inline Eigen::Matrix3Xd getAccelerations() const
+    {
+        int N = getPieceNum();
+        Eigen::Matrix3Xd accelerations(3, N + 1);
+        for (int i = 0; i < N; i++)
+        {
+            accelerations.col(i) = pieces[i].getCoeffMat().col(D - 2) * 2.0;
+        }
+        accelerations.col(N) = pieces[N - 1].getAcc(pieces[N - 1].getDuration());
+        return accelerations;
     }
 
     inline const Piece<D> &operator[](int i) const
@@ -478,7 +531,8 @@ public:
         int pieceIdx = locatePieceIdx(t);
         return pieces[pieceIdx].getJer(t);
     }
-
+    // what is JuncPos
+    // junction position
     inline Eigen::Vector3d getJuncPos(int juncIdx) const
     {
         if (juncIdx != getPieceNum())

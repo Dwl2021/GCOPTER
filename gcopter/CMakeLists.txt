@@ -31,4 +31,5 @@ add_executable(global_planning src/global_planning.cpp)
 target_link_libraries(global_planning
   ${OMPL_LIBRARIES}
   ${catkin_LIBRARIES}
+  ${EIGEN3_INCLUDE_DIRS}
 )

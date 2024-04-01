@@ -12,6 +12,8 @@
 #include <geometry_msgs/PoseStamped.h>
 #include <sensor_msgs/PointCloud2.h>
 
+#include <Eigen/Core>
+
 #include <cmath>
 #include <iostream>
 #include <string>
@@ -151,6 +153,12 @@ public:
                                                    voxelMap.getCorner(),
                                                    &voxelMap, 0.01,
                                                    route);
+            // print route
+            for (size_t i = 0; i < route.size(); i++)
+            {
+                std::cout << "route[" << i << "]: " << route[i].transpose() << std::endl;
+            }
+
             std::vector<Eigen::MatrixX4d> hPolys;
             std::vector<Eigen::Vector3d> pc;
             voxelMap.getSurf(pc);
@@ -221,7 +229,7 @@ public:
                 }
 
                 if (traj.getPieceNum() > 0)
-                {
+                {   
                     trajStamp = ros::Time::now().toSec();
                     visualizer.visualize(traj, route);
                 }
@@ -284,6 +292,11 @@ public:
                                 traj.getJer(delta),
                                 0.0, 0.0,
                                 thr, quat, omg);
+                // print the current state
+                std::cout << "thr: " << thr << std::endl;
+                std::cout << "quat: " << quat.transpose() << std::endl;
+                std::cout << "omg: " << omg.transpose() << std::endl;
+                
                 double speed = traj.getVel(delta).norm();
                 double bodyratemag = omg.norm();
                 double tiltangle = acos(1.0 - 2.0 * (quat(1) * quat(1) + quat(2) * quat(2)));
